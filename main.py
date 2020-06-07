@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, session
 from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import datetime
@@ -9,6 +9,8 @@ with open('config.json', 'r') as c:
     params = json.load(c)["params"]
 
 app = Flask(__name__)
+app.secret_key = 'super-secret-key'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 if (params["local_server"]):
     app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
@@ -34,7 +36,6 @@ class Posts(db.Model):
     img_file = db.Column(db.String(12), nullable = False)
 
 
-
 @app.route('/')
 def home():
     #Fileter_by query is not needed.
@@ -45,9 +46,26 @@ def home():
 def about():
     return render_template('about.html', params=params)
 
-@app.route('/dashboard')
+
+@app.route('/dashboard', methods = ['GET', 'POST'])
 def dashboard():
+    #Check if user had already logged in
+    if 'user' in session and session['user'] == params['admin_user']:
+        return render_template('dashboard.html', params=params)
+
+    if request.method == 'POST':
+        #Redirect to admin panel after authentication
+       
+        username = request.form.get('uname')
+        password = request.form.get('password')
+
+        if username == params['admin_user'] and password == params['admin_password']:
+            #set the session variable
+            session['user'] = username
+            return render_template('dashboard.html', params=params)
+
     return render_template('login.html', params=params)
+        
 
 
 @app.route('/contact', methods = ['GET', 'POST'])

@@ -9,7 +9,9 @@
         "blog_name": "Jay's Blog",
         "jumbotron": "Codingthon",
         "tagline": "Canvas for my mind.",
-        "num_of_pos": 5
+        "num_of_pos": 5,
+        "admin_user": "jaykhedekar",
+        "admin_password": "root"
 
     }
 
