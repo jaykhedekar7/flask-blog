@@ -3,8 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import datetime
 from flask_mail import Mail
-#Code added to github done
-#Code added to github
 
 
 with open('config.json', 'r') as c:
