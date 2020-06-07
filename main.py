@@ -3,12 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import datetime
 from flask_mail import Mail
-<<<<<<< HEAD
 #Code added to github done
-=======
 #Code added to github
-#Added to a clone repo
->>>>>>> 81e81e8a370744e992e065f4013710b8fa7777f2
+
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
