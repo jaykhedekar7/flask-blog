@@ -38,12 +38,17 @@ class Posts(db.Model):
 @app.route('/')
 def home():
     #Fileter_by query is not needed.
-    posts = Posts.query.filter_by().all()
+    posts = Posts.query.filter_by().all()[0:params['num_of_pos']]
     return render_template('index.html', params=params, posts=posts)
 
 @app.route('/about')
 def about():
     return render_template('about.html', params=params)
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('login.html', params=params)
+
 
 @app.route('/contact', methods = ['GET', 'POST'])
 def contact():
