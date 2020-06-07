@@ -34,7 +34,7 @@ class Posts(db.Model):
     slug = db.Column(db.String(21), nullable = False)
     content = db.Column(db.String(300), nullable = False)
     date = db.Column(db.String(12))
-    img_file = db.Column(db.String(12), nullable = False)
+    img_file = db.Column(db.String(12), nullable = True)
 
 
 @app.route('/')
@@ -52,18 +52,19 @@ def about():
 def dashboard():
     #Check if user had already logged in
     if 'user' in session and session['user'] == params['admin_user']:
-        return render_template('dashboard.html', params=params)
+        posts = Posts.query.all()
+        return render_template('dashboard.html', params=params, posts=posts)
 
     if request.method == 'POST':
         #Redirect to admin panel after authentication
-       
         username = request.form.get('uname')
         password = request.form.get('password')
 
         if username == params['admin_user'] and password == params['admin_password']:
             #set the session variable
             session['user'] = username
-            return render_template('dashboard.html', params=params)
+            posts = Posts.query.all()
+            return render_template('dashboard.html', params=params, posts=posts)
 
     return render_template('login.html', params=params)
         
@@ -89,6 +90,25 @@ def post_route(post_slug):
     post = Posts.query.filter_by(slug=post_slug).first()
 
     return render_template('post.html', params=params, post=post)
+
+@app.route('/edit/<string:post_sno>', methods=['GET', 'POST'])
+def edit_route(post_sno):
+    post = Posts.query.filter_by(sno=post_sno).first()
+    if 'user' in session and session['user'] == params['admin_user']:
+        if request.method == 'POST':
+            sno = post_sno
+            box_title = request.form.get('title')
+            box_content = request.form.get('content')
+            box_slug = box_title[0:20]
+            box_img = request.form.get('image')
+
+            if sno == 'create-new-post':
+                post = Posts(title = box_title, content = box_content, slug = box_content[0:44].replace(" ","-"), date=datetime.now(), img_file = box_img)
+                db.session.add(post)
+                db.session.commit()
+       
+        return render_template('edit.html', params=params, post=post, sno=post_sno)
+       
 
 if __name__ == "__main__":
     app.run(debug=True)
