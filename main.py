@@ -1,7 +1,8 @@
-from flask import Flask, render_template, url_for, request, session
+from flask import Flask, render_template, url_for, request, session, redirect
 from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import datetime
+import random
 from flask_mail import Mail
 
 
@@ -98,13 +99,22 @@ def edit_route(post_sno):
             sno = post_sno
             box_title = request.form.get('title')
             box_content = request.form.get('content')
-            box_slug = box_title[0:20]
+            box_slug = box_title[0:150].replace(" ","-") + "-" + str(random.randint(1000,100000))
             box_img = request.form.get('image')
+            date=datetime.now()
 
             if sno == 'create-new-post':
-                post = Posts(title = box_title, content = box_content, slug = box_content[0:44].replace(" ","-"), date=datetime.now(), img_file = box_img)
+                post = Posts(title = box_title, content = box_content, slug = box_slug, date=date, img_file = box_img)
                 db.session.add(post)
                 db.session.commit()
+            else:
+                post = Posts.query.filter_by(sno=sno).first()
+                post.title = box_title
+                post.content = box_content
+                post.img_file = box_img
+                post.slug = box_title[0:150].replace(" ","-") + "-" + str(random.randint(1000,100000))
+                db.session.commit()
+                return redirect("/edit/"+sno)
        
         return render_template('edit.html', params=params, post=post, sno=post_sno)
        
