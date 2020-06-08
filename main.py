@@ -5,8 +5,6 @@ from datetime import datetime
 import random
 from flask_mail import Mail
 
-#I added this comment
-
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
 
