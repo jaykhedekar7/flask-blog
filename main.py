@@ -4,7 +4,6 @@ import json
 from datetime import datetime
 from flask_mail import Mail
 
-#Did this from gmail account
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
