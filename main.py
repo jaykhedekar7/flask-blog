@@ -114,9 +114,16 @@ def edit_route(post_sno):
                 post.slug = box_title[0:150].replace(" ","-") + "-" + str(random.randint(1000,100000))
                 db.session.commit()
                 return redirect("/edit/"+sno)
+            
+        
        
         return render_template('edit.html', params=params, post=post, sno=post_sno)
        
+
+@app.route('/logout')
+def logout():
+    session.pop('user')
+    return redirect('/dashboard')
 
 if __name__ == "__main__":
     app.run(debug=True)
