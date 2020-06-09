@@ -43,7 +43,7 @@
           <td>{{post.date}}</td>
           <td><a href="/post/{{post.slug}}"><button class="btn btn-primary"> View </button></a></td>
           <td><a href="/edit/{{post.sno}}"><button class="btn btn-warning"> Edit </button></a></td>
-          <td><a href=""><button class="btn btn btn-danger"> Delete </button></a></td>
+          <td><a href="/delete/{{post.sno}}"><button class="btn btn btn-danger"> Delete </button></a></td>
         </tr>
         {% endfor %}
       </tbody>
