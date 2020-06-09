@@ -3,14 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 from datetime import datetime
 import random
-from flask_mail import Mail
+import os
 
 with open('config.json', 'r') as c:
     params = json.load(c)["params"]
 
 app = Flask(__name__)
-app.secret_key = 'super-secret-key'
+app.secret_key = os.urandom(24)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+SESSION_COOKIE_SECURE=True
+SESSION_COOKIE_NAME='codingthon-website'
 
 if (params["local_server"]):
     app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
@@ -115,15 +118,23 @@ def edit_route(post_sno):
                 db.session.commit()
                 return redirect("/edit/"+sno)
             
-        
-       
         return render_template('edit.html', params=params, post=post, sno=post_sno)
        
+
+@app.route('/delete/<string:post_sno>', methods=['GET', 'POST'])
+def delete_route(post_sno):
+    if 'user' in session and session['user'] == params['admin_user']:
+        post = Posts.query.filter_by(sno=post_sno).first()
+        db.session.delete(post)
+        db.session.commit()
+        return redirect('/dashboard')
+
 
 @app.route('/logout')
 def logout():
     session.pop('user')
     return redirect('/dashboard')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
