@@ -4,13 +4,13 @@
         "local_server": "True",
         "local_uri": "mysql://root:@localhost/jayblog",
         "prod_uri": "mysql://root:@localhost/jayblog",
-        "git_url": "https://github.com/jaykhedekar7",
-        "twit_url": "https://twitter.com/JayKhedekar7",
+        "git_url": "",
+        "twit_url": "",
         "blog_name": "Jay's Blog",
         "jumbotron": "Codingthon",
         "tagline": "Canvas for my mind.",
         "num_of_pos": 5,
-        "admin_user": "jaykhedekar",
+        "admin_user": "root",
         "admin_password": "root"
 
     }
