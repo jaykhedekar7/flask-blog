@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import random
 import os
+import math
 
 
 with open('config.json', 'r') as c:
@@ -42,9 +43,34 @@ class Posts(db.Model):
 
 @app.route('/')
 def home():
+    #Pagination logic
+    posts = Posts.query.filter_by().all()
+    last = math.floor(len(posts)/int(params['num_of_pos']))+1
+    # posts = Posts[]
+    page = request.args.get('page')
+    
+    if (not str(page).isnumeric()):
+        page = 1
+    page = int(page)
+    posts = posts[(page-1)*int(params['num_of_pos']): (page-1)*int(params['num_of_pos']) + int(params['num_of_pos'])]
+    #On first page
+    if page == 1:
+        prevpage = '#'
+        nextpage = '/?page=' + str(page+1)
+
+    #On last page
+    elif page ==last:
+        prevpage = '/?page=' + str(page-1)
+        nextpage = '#'
+    
+    #On middle page
+    else:
+        prevpage = '/?page=' + str(page-1)
+        nextpage = '/?page=' + str(page+1)
+    
     #Fileter_by query is not needed.
-    posts = Posts.query.filter_by().all()[0:params['num_of_pos']]
-    return render_template('index.html', params=params, posts=posts)
+   # posts = Posts.query.filter_by().all()[0:params['num_of_pos']]
+    return render_template('index.html', params=params, posts=posts, prevpage=prevpage, nextpage=nextpage)
 
 @app.route('/about')
 def about():
@@ -110,6 +136,7 @@ def edit_route(post_sno):
                 post = Posts(title = box_title, content = box_content, slug = box_slug, date=date, img_file = box_img)
                 db.session.add(post)
                 db.session.commit()
+                
             else:
                 post = Posts.query.filter_by(sno=sno).first()
                 post.title = box_title
